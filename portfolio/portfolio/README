@@ -1,0 +1,50 @@
+Portfolio Optimization Service
+
+The example code in this folder implements a portfolio optimization service.
+It illustrates how to write a service that uses IBM ILOG CPLEX to solve
+optimization problems in Platform Symphony.
+The optimization service takes as input
+- A list of investments. For each investment an expected return is specified.
+- A covariance matrix. The Covariance between two investments models the
+  interdependency of these two investments.
+- An initial wealth, the money we are allowed to invest.
+- A risk factor rho in [0,1]. The optimization service balances variance vs.
+  return. Small values of rho mean high risk, that is, higher return but with
+  higher variance. Large values of rho mean less risk but also less return.
+Based on this input the portfolio service computes an optimal portfolio
+allocation. It returns for each investment the optimal allocation. It also
+returns the expected return and variance of the optimal portfolio allocation.
+
+The example consists of three components:
+1. The portfolio service implementation in the Service folder.
+   This implements the portfolio service that uses IBM ILOG CPLEX to find an
+   optimal portfolio allocation. The service sets up an optimization problem,
+   populates it with the input data and then solves the resulting problem
+   instance using the CPLEX optimizer. Details about the model can be found
+   in the source code comments in PortfolioService.cpp. A formal description
+   and discussion of the model can be found in the paper at
+   http://cowles.econ.yale.edu/P/cm/m16.
+2. A simple command line client in the Client folder. Using
+     ./PortfolioClient
+   you can submit the hard-coded example data to the optimization service.
+   Try
+     ./PortfolioClient -help
+   for more options (loading data from a file, detaching from an optimization
+   run, ...).
+3. A Java Swing GUI client in the java folder that allows interactive editing
+   and graphical display of results.
+   The main component in the GUI is a table that allows specification of
+   investments, returns, and covariance. The GUI offers two ways to use the
+   portfolio optimization service:
+   - Click the "Run" button to find the optimal portfolio allocation for the
+     specified rho and wealth values. Multiple rho and/or wealth can be
+     specified as a blank separated list of values. The GUI will create a
+     separate task for each combination of those values. For each task the
+     GUI will also create a new tab that displays the results.
+   - Click the "Sample" button to sample the rho parameter over the specified
+     interval with the specified step width. For each sampling value of rho
+     the GUI will submit a separate task to the portfolio optimization service.
+     Sampling results are displayed in a graph as they come in on a new tab.
+   NOTE: This Java code is NOT an example of GUI writing. The GUI is somewhat
+         minimalistic and only serves the purpose to have a simple graphical
+         frontend to the portfolio optimization service.
